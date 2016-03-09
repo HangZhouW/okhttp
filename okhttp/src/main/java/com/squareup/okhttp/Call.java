@@ -167,7 +167,13 @@ public class Call {
           signalledCallback = true;
           responseCallback.onResponse(response);
         }
-      } catch (IOException e) {
+      } catch (Exception oe) {
+        IOException e;
+        if (oe instanceof IOException) {
+          e = (IOException) oe;
+        } else {
+          e = new IOException(oe);
+        }
         if (signalledCallback) {
           // Do not signal the callback twice!
           logger.log(Level.INFO, "Callback failure for " + toLoggableString(), e);

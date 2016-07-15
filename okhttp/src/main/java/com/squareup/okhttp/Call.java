@@ -41,6 +41,7 @@ public class Call {
   /** The application's original request unadulterated by redirects or auth headers. */
   Request originalRequest;
   HttpEngine engine;
+  protected int recycleCount;
 
   protected Call(OkHttpClient client, Request originalRequest) {
     // Copy the client. Otherwise changes (socket factory, redirect policy,
@@ -124,6 +125,13 @@ public class Call {
 
   public boolean isCanceled() {
     return canceled;
+  }
+
+  /**
+   * get recycleCount of last connection.
+   */
+  public int recycleCount() {
+    return recycleCount;
   }
 
   final class AsyncCall extends NamedRunnable {
@@ -303,6 +311,13 @@ public class Call {
 
         // Give up; recovery is not possible.
         throw e;
+      } finally {
+        if (!forWebSocket) {
+          Connection conn = engine != null ? engine.getConnection() : null;
+          if (conn != null) {
+            recycleCount = conn.recycleCount();
+          }
+        }
       }
 
       Response response = engine.getResponse();

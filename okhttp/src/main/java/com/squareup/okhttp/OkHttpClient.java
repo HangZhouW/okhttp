@@ -190,7 +190,7 @@ public class OkHttpClient implements Cloneable {
     dispatcher = new Dispatcher();
   }
 
-  private OkHttpClient(OkHttpClient okHttpClient) {
+  public OkHttpClient(OkHttpClient okHttpClient) {
     this.routeDatabase = okHttpClient.routeDatabase;
     this.dispatcher = okHttpClient.dispatcher;
     this.proxy = okHttpClient.proxy;
